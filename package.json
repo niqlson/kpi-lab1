@@ -1,15 +1,16 @@
 {
   "name": "fitness-booking-api",
   "version": "1.0.0",
-  "description": "Fitness class booking REST API — KPI Lab 1 → Lab 2 (layered architecture)",
+  "description": "Fitness class booking REST API — KPI Labs 1, 2, 3 (layered + CQS)",
   "main": "src/presentation/server.js",
   "scripts": {
     "start": "node src/presentation/server.js",
     "dev": "node --watch src/presentation/server.js",
-    "test": "node --test --test-reporter=spec \"tests/unit/domain/value-objects/*.test.js\" \"tests/unit/domain/entities/*.test.js\" \"tests/unit/domain/factories/*.test.js\" \"tests/unit/application/*.test.js\" \"tests/integration/*.test.js\"",
+    "test": "node --test --test-reporter=spec \"tests/unit/domain/value-objects/*.test.js\" \"tests/unit/domain/entities/*.test.js\" \"tests/unit/domain/factories/*.test.js\" \"tests/unit/commands/*.test.js\" \"tests/integration/commands/*.test.js\" \"tests/integration/queries/*.test.js\"",
     "test:unit:domain": "node --test --test-reporter=spec \"tests/unit/domain/value-objects/*.test.js\" \"tests/unit/domain/entities/*.test.js\" \"tests/unit/domain/factories/*.test.js\"",
-    "test:unit:application": "node --test --test-reporter=spec \"tests/unit/application/*.test.js\"",
-    "test:integration": "node --test --test-reporter=spec \"tests/integration/*.test.js\""
+    "test:unit:commands": "node --test --test-reporter=spec \"tests/unit/commands/*.test.js\"",
+    "test:integration:commands": "node --test --test-reporter=spec \"tests/integration/commands/*.test.js\"",
+    "test:integration:queries": "node --test --test-reporter=spec \"tests/integration/queries/*.test.js\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -4,7 +4,7 @@ const {
   NotFoundError,
   ConflictError,
 } = require('../../domain/errors');
-const { InvalidCredentialsError } = require('../../application/use-cases/login-user');
+const { InvalidCredentialsError } = require('../../application/commands/login-user');
 
 function jsonBodyErrorHandler(err, req, res, next) {
   if (err && err.type === 'entity.parse.failed') {

@@ -11,7 +11,7 @@ async function buildTestApp() {
     password: 'admin12345',
   });
   const app = createApp({
-    useCases: container.useCases,
+    handlers: container.handlers,
     tokenService: container.services.tokenService,
   });
   return { app, db, container };

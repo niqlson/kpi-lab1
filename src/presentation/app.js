@@ -8,14 +8,14 @@ const {
   fallbackErrorHandler,
 } = require('./middleware/error-handler');
 
-function createApp({ useCases, tokenService }) {
+function createApp({ handlers, tokenService }) {
   const app = express();
   app.use(express.json());
 
   app.get('/health', (req, res) => res.json({ status: 'ok' }));
-  app.use('/api/auth', buildAuthRouter({ useCases, tokenService }));
-  app.use('/api/classes', buildFitnessClassesRouter({ useCases, tokenService }));
-  app.use('/api/bookings', buildBookingsRouter({ useCases, tokenService }));
+  app.use('/api/auth', buildAuthRouter({ handlers, tokenService }));
+  app.use('/api/classes', buildFitnessClassesRouter({ handlers, tokenService }));
+  app.use('/api/bookings', buildBookingsRouter({ handlers, tokenService }));
 
   app.use((req, res) => res.status(404).json({ error: 'not found' }));
 

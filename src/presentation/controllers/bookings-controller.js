@@ -1,41 +1,45 @@
 const express = require('express');
-const { bookingToResponse } = require('../dto/booking-dto');
 const { buildAuthMiddleware } = require('../middleware/auth-middleware');
 const { ValidationError } = require('../../domain/errors');
+const { BookClassCommand } = require('../../application/commands/book-class');
+const { CancelBookingCommand } = require('../../application/commands/cancel-booking');
+const { ListMyBookingsQuery } = require('../../application/queries/list-my-bookings');
 
-function buildBookingsRouter({ useCases, tokenService }) {
+function buildBookingsRouter({ handlers, tokenService }) {
   const router = express.Router();
   const authRequired = buildAuthMiddleware(tokenService);
 
   router.post('/', authRequired, async (req, res, next) => {
     try {
-      const { classId } = req.body || {};
+      const classId = req.body?.classId;
       if (typeof classId !== 'string' || classId.length === 0) {
         throw new ValidationError('classId must be a non-empty string');
       }
-      const booking = await useCases.bookClass.execute({ userId: req.user.id, classId });
-      res.status(201).json(bookingToResponse(booking));
-    } catch (err) {
-      next(err);
-    }
+      const result = await handlers.bookClass.handle(new BookClassCommand({
+        userId: req.user.id,
+        classId,
+      }));
+      res.status(201).json(result);
+    } catch (err) { next(err); }
   });
 
   router.get('/my', authRequired, async (req, res, next) => {
     try {
-      const items = await useCases.listMyBookings.execute({ userId: req.user.id });
-      res.json({ items: items.map((it) => bookingToResponse(it.booking, it.fitnessClass)) });
-    } catch (err) {
-      next(err);
-    }
+      const result = await handlers.listMyBookings.handle(new ListMyBookingsQuery({
+        userId: req.user.id,
+      }));
+      res.json(result);
+    } catch (err) { next(err); }
   });
 
   router.delete('/:id', authRequired, async (req, res, next) => {
     try {
-      await useCases.cancelBooking.execute({ bookingId: req.params.id, userId: req.user.id });
+      await handlers.cancelBooking.handle(new CancelBookingCommand({
+        bookingId: req.params.id,
+        userId: req.user.id,
+      }));
       res.status(204).send();
-    } catch (err) {
-      next(err);
-    }
+    } catch (err) { next(err); }
   });
 
   return router;

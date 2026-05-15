@@ -17,7 +17,7 @@ async function main() {
     password: process.env.ADMIN_PASSWORD,
   });
 
-  const app = createApp({ useCases: container.useCases, tokenService: container.services.tokenService });
+  const app = createApp({ handlers: container.handlers, tokenService: container.services.tokenService });
   app.listen(port, () => {
     // eslint-disable-next-line no-console
     console.log(`Server listening on http://localhost:${port}`);

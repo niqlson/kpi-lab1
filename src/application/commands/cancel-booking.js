@@ -1,6 +1,13 @@
 const { NotFoundError, ConflictError } = require('../../domain/errors');
 
-class CancelBooking {
+class CancelBookingCommand {
+  constructor({ bookingId, userId }) {
+    this.bookingId = bookingId;
+    this.userId = userId;
+  }
+}
+
+class CancelBookingHandler {
   #bookingRepository;
   #fitnessClassRepository;
   #clock;
@@ -11,17 +18,17 @@ class CancelBooking {
     this.#clock = clock ?? (() => new Date());
   }
 
-  async execute({ bookingId, userId }) {
-    const booking = await this.#bookingRepository.findById(bookingId);
-    if (!booking || !booking.belongsTo(userId)) {
+  async handle(command) {
+    const booking = await this.#bookingRepository.findById(command.bookingId);
+    if (!booking || !booking.belongsTo(command.userId)) {
       throw new NotFoundError('booking not found');
     }
     const cls = await this.#fitnessClassRepository.findById(booking.classId);
     if (cls && cls.hasStarted(this.#clock())) {
       throw new ConflictError('cannot cancel a booking for a class that has started');
     }
-    await this.#bookingRepository.delete(bookingId);
+    await this.#bookingRepository.delete(command.bookingId);
   }
 }
 
-module.exports = { CancelBooking };
+module.exports = { CancelBookingCommand, CancelBookingHandler };
