@@ -4,12 +4,12 @@ const {
   LoginUserCommand,
   LoginUserHandler,
   InvalidCredentialsError,
-} = require('../../../src/application/commands/login-user');
+} = require('../../../src/modules/core/application/commands/login-user');
 const {
   RegisterUserCommand,
   RegisterUserHandler,
-} = require('../../../src/application/commands/register-user');
-const { UserFactory } = require('../../../src/domain/factories/user-factory');
+} = require('../../../src/modules/core/application/commands/register-user');
+const { UserFactory } = require('../../../src/modules/core/domain/factories/user-factory');
 const { InMemoryUserRepository } = require('../../helpers/in-memory-repositories');
 const { FakePasswordHasher, FakeTokenService } = require('../../helpers/fakes');
 

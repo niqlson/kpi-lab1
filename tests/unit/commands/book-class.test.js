@@ -1,14 +1,14 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { BookClassCommand, BookClassHandler } = require('../../../src/application/commands/book-class');
-const { CancelBookingCommand, CancelBookingHandler } = require('../../../src/application/commands/cancel-booking');
-const { BookingFactory } = require('../../../src/domain/factories/booking-factory');
-const { FitnessClassFactory } = require('../../../src/domain/factories/fitness-class-factory');
+const { BookClassCommand, BookClassHandler } = require('../../../src/modules/core/application/commands/book-class');
+const { CancelBookingCommand, CancelBookingHandler } = require('../../../src/modules/core/application/commands/cancel-booking');
+const { BookingFactory } = require('../../../src/modules/core/domain/factories/booking-factory');
+const { FitnessClassFactory } = require('../../../src/modules/core/domain/factories/fitness-class-factory');
 const {
   InMemoryFitnessClassRepository,
   InMemoryBookingRepository,
 } = require('../../helpers/in-memory-repositories');
-const { ConflictError, NotFoundError } = require('../../../src/domain/errors');
+const { ConflictError, NotFoundError } = require('../../../src/modules/core/domain/errors');
 const { futureIso } = require('../../helpers/fakes');
 
 async function setup() {

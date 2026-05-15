@@ -1,8 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { User } = require('../../../../src/domain/entities/user');
-const { Email } = require('../../../../src/domain/value-objects/email');
-const { ValidationError } = require('../../../../src/domain/errors');
+const { User } = require('../../../../src/modules/core/domain/entities/user');
+const { Email } = require('../../../../src/modules/core/domain/value-objects/email');
+const { ValidationError } = require('../../../../src/modules/core/domain/errors');
 
 const baseFields = () => ({
   id: 'user-1',

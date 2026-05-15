@@ -1,8 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { FitnessClass } = require('../../../../src/domain/entities/fitness-class');
-const { TimeSlot } = require('../../../../src/domain/value-objects/time-slot');
-const { ValidationError, ConflictError } = require('../../../../src/domain/errors');
+const { FitnessClass } = require('../../../../src/modules/core/domain/entities/fitness-class');
+const { TimeSlot } = require('../../../../src/modules/core/domain/value-objects/time-slot');
+const { ValidationError, ConflictError } = require('../../../../src/modules/core/domain/errors');
 
 const futureSlot = (offsetMin = 60, durationMin = 60) =>
   new TimeSlot(

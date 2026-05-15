@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { Booking } = require('../../../../src/domain/entities/booking');
-const { ValidationError } = require('../../../../src/domain/errors');
+const { Booking } = require('../../../../src/modules/core/domain/entities/booking');
+const { ValidationError } = require('../../../../src/modules/core/domain/errors');
 
 const valid = () => ({
   id: 'b-1',

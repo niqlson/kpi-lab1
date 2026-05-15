@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { Email } = require('../../../../src/domain/value-objects/email');
-const { ValidationError } = require('../../../../src/domain/errors');
+const { Email } = require('../../../../src/modules/core/domain/value-objects/email');
+const { ValidationError } = require('../../../../src/modules/core/domain/errors');
 
 test('Email accepts a normal email and lower-cases it', () => {
   const e = new Email('Alice@Example.COM');

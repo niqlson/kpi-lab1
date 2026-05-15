@@ -1,6 +1,6 @@
-const { UserRepository } = require('../../src/domain/repositories/user-repository');
-const { FitnessClassRepository } = require('../../src/domain/repositories/fitness-class-repository');
-const { BookingRepository } = require('../../src/domain/repositories/booking-repository');
+const { UserRepository } = require('../../src/modules/core/domain/repositories/user-repository');
+const { FitnessClassRepository } = require('../../src/modules/core/domain/repositories/fitness-class-repository');
+const { BookingRepository } = require('../../src/modules/core/domain/repositories/booking-repository');
 
 class InMemoryUserRepository extends UserRepository {
   constructor() {

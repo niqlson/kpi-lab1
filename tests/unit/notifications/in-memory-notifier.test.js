@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { InMemoryNotifier } = require('../../../src/notifications/in-memory-notifier');
+const { InMemoryNotifier } = require('../../../src/modules/notifications/infrastructure/in-memory-notifier');
 
 test('InMemoryNotifier records welcome notifications', async () => {
   const n = new InMemoryNotifier();

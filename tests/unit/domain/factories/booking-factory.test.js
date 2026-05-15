@@ -1,12 +1,12 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { BookingFactory } = require('../../../../src/domain/factories/booking-factory');
-const { FitnessClassFactory } = require('../../../../src/domain/factories/fitness-class-factory');
+const { BookingFactory } = require('../../../../src/modules/core/domain/factories/booking-factory');
+const { FitnessClassFactory } = require('../../../../src/modules/core/domain/factories/fitness-class-factory');
 const {
   InMemoryFitnessClassRepository,
   InMemoryBookingRepository,
 } = require('../../../helpers/in-memory-repositories');
-const { NotFoundError, ConflictError } = require('../../../../src/domain/errors');
+const { NotFoundError, ConflictError } = require('../../../../src/modules/core/domain/errors');
 const { futureIso } = require('../../../helpers/fakes');
 
 async function setup() {

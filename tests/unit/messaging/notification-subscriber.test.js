@@ -1,15 +1,17 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { SyncEventBus } = require('../../../src/messaging/sync-event-bus');
-const { NotificationSubscriber } = require('../../../src/messaging/subscribers/notification-subscriber');
-const { InMemoryNotifier } = require('../../../src/notifications/in-memory-notifier');
-const { FailingNotifier } = require('../../../src/notifications/failing-notifier');
-const { BookingCreated } = require('../../../src/messaging/events/booking-created');
-const { UserRegistered } = require('../../../src/messaging/events/user-registered');
+const { SyncEventBus } = require('../../../src/shared/messaging/sync-event-bus');
+const { NotificationSubscriber } = require('../../../src/modules/notifications/subscribers/notification-subscriber');
+const { InMemoryNotifier } = require('../../../src/modules/notifications/infrastructure/in-memory-notifier');
+const { FailingNotifier } = require('../../../src/modules/notifications/infrastructure/failing-notifier');
+const { BookingCreated } = require('../../../src/modules/core/events/booking-created');
+const { UserRegistered } = require('../../../src/modules/core/events/user-registered');
+const { CoreEventTranslator } = require('../../../src/modules/notifications/acl/core-event-translator');
 
 function setup(notifier) {
   const bus = new SyncEventBus();
-  const sub = new NotificationSubscriber({ notifier });
+  const translator = new CoreEventTranslator();
+  const sub = new NotificationSubscriber({ notifier, translator });
   sub.registerOn(bus);
   return { bus };
 }
@@ -57,7 +59,7 @@ test('NotificationSubscriber failure is contained by SyncEventBus, does not thro
   const notifier = new FailingNotifier();
   const errors = [];
   const bus = new SyncEventBus({ onError: (err) => errors.push(err.message) });
-  new NotificationSubscriber({ notifier }).registerOn(bus);
+  new NotificationSubscriber({ notifier, translator: new CoreEventTranslator() }).registerOn(bus);
   await bus.publish(bookingEvent());  // must not throw
   assert.equal(errors.length, 1);
   assert.match(errors[0], /down/);

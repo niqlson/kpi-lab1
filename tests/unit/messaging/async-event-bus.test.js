@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { AsyncEventBus } = require('../../../src/messaging/async-event-bus');
+const { AsyncEventBus } = require('../../../src/shared/messaging/async-event-bus');
 
 const evt = (name) => ({ eventName: name, eventId: `id-${Math.random()}` });
 

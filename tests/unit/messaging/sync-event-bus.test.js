@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { SyncEventBus } = require('../../../src/messaging/sync-event-bus');
+const { SyncEventBus } = require('../../../src/shared/messaging/sync-event-bus');
 
 const evt = (name) => ({ eventName: name, eventId: `id-${Math.random()}` });
 

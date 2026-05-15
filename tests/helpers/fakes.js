@@ -1,5 +1,5 @@
-const { PasswordHasher } = require('../../src/application/ports/password-hasher');
-const { TokenService } = require('../../src/application/ports/token-service');
+const { PasswordHasher } = require('../../src/modules/core/application/ports/password-hasher');
+const { TokenService } = require('../../src/modules/core/application/ports/token-service');
 
 class FakePasswordHasher extends PasswordHasher {
   async hash(plain) { return `hashed:${plain}`; }

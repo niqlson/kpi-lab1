@@ -1,19 +1,15 @@
-const { openDatabase } = require('../../src/infrastructure/db/connection');
-const { createApp } = require('../../src/presentation/app');
-const { buildContainer, seedAdmin } = require('../../src/presentation/composition-root');
+const { openDatabase } = require('../../src/app/db');
+const { createApp } = require('../../src/app/app');
+const { buildContainer } = require('../../src/app/composition-root');
 
-async function buildTestApp() {
+async function buildTestApp(options = {}) {
   const db = openDatabase(':memory:');
-  const container = buildContainer({ db, jwtSecret: 'test-secret' });
-  await seedAdmin({
-    container,
+  const container = buildContainer({ db, jwtSecret: 'test-secret', ...options });
+  await container.core.seedAdmin({
     email: 'admin@test.local',
     password: 'admin12345',
   });
-  const app = createApp({
-    handlers: container.handlers,
-    tokenService: container.services.tokenService,
-  });
+  const app = createApp({ container });
   return { app, db, container };
 }
 

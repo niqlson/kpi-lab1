@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { FitnessClassFactory } = require('../../../../src/domain/factories/fitness-class-factory');
-const { ValidationError } = require('../../../../src/domain/errors');
+const { FitnessClassFactory } = require('../../../../src/modules/core/domain/factories/fitness-class-factory');
+const { ValidationError } = require('../../../../src/modules/core/domain/errors');
 const { futureIso } = require('../../../helpers/fakes');
 
 test('FitnessClassFactory.create produces a valid class on the happy path', () => {

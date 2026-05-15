@@ -3,21 +3,21 @@ const assert = require('node:assert/strict');
 const {
   CreateFitnessClassCommand,
   CreateFitnessClassHandler,
-} = require('../../../src/application/commands/create-fitness-class');
+} = require('../../../src/modules/core/application/commands/create-fitness-class');
 const {
   UpdateFitnessClassCommand,
   UpdateFitnessClassHandler,
-} = require('../../../src/application/commands/update-fitness-class');
+} = require('../../../src/modules/core/application/commands/update-fitness-class');
 const {
   DeleteFitnessClassCommand,
   DeleteFitnessClassHandler,
-} = require('../../../src/application/commands/delete-fitness-class');
-const { FitnessClassFactory } = require('../../../src/domain/factories/fitness-class-factory');
+} = require('../../../src/modules/core/application/commands/delete-fitness-class');
+const { FitnessClassFactory } = require('../../../src/modules/core/domain/factories/fitness-class-factory');
 const {
   InMemoryFitnessClassRepository,
   InMemoryBookingRepository,
 } = require('../../helpers/in-memory-repositories');
-const { ValidationError, NotFoundError, ConflictError } = require('../../../src/domain/errors');
+const { ValidationError, NotFoundError, ConflictError } = require('../../../src/modules/core/domain/errors');
 const { futureIso } = require('../../helpers/fakes');
 
 function build() {

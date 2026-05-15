@@ -1,8 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { UserFactory } = require('../../../../src/domain/factories/user-factory');
+const { UserFactory } = require('../../../../src/modules/core/domain/factories/user-factory');
 const { InMemoryUserRepository } = require('../../../helpers/in-memory-repositories');
-const { ValidationError, ConflictError } = require('../../../../src/domain/errors');
+const { ValidationError, ConflictError } = require('../../../../src/modules/core/domain/errors');
 
 test('UserFactory.create produces a valid User on the happy path', async () => {
   const repo = new InMemoryUserRepository();

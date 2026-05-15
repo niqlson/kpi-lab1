@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { TimeSlot } = require('../../../../src/domain/value-objects/time-slot');
-const { ValidationError } = require('../../../../src/domain/errors');
+const { TimeSlot } = require('../../../../src/modules/core/domain/value-objects/time-slot');
+const { ValidationError } = require('../../../../src/modules/core/domain/errors');
 
 const T = (iso) => new Date(iso);
 

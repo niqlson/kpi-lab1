@@ -3,11 +3,11 @@ const assert = require('node:assert/strict');
 const {
   RegisterUserCommand,
   RegisterUserHandler,
-} = require('../../../src/application/commands/register-user');
-const { UserFactory } = require('../../../src/domain/factories/user-factory');
+} = require('../../../src/modules/core/application/commands/register-user');
+const { UserFactory } = require('../../../src/modules/core/domain/factories/user-factory');
 const { InMemoryUserRepository } = require('../../helpers/in-memory-repositories');
 const { FakePasswordHasher, FakeTokenService } = require('../../helpers/fakes');
-const { ValidationError, ConflictError } = require('../../../src/domain/errors');
+const { ValidationError, ConflictError } = require('../../../src/modules/core/domain/errors');
 
 function build() {
   const userRepository = new InMemoryUserRepository();
