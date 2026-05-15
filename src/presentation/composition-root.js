@@ -1,4 +1,8 @@
-// Composition root — wires all four layers, including both write and read sides.
+// Composition root — wires all four layers, plus the side-effect subsystem
+// (notifier + event bus + subscribers).
+//
+// COMMUNICATION_MODE controls whether the event bus delivers synchronously
+// (handler awaits subscribers) or asynchronously (publish() returns immediately).
 
 const { SqliteUserRepository } = require('../infrastructure/repositories/sqlite-user-repository');
 const { SqliteFitnessClassRepository } = require('../infrastructure/repositories/sqlite-fitness-class-repository');
@@ -12,6 +16,12 @@ const { JwtTokenService } = require('../infrastructure/security/jwt-token-servic
 const { UserFactory } = require('../domain/factories/user-factory');
 const { FitnessClassFactory } = require('../domain/factories/fitness-class-factory');
 const { BookingFactory } = require('../domain/factories/booking-factory');
+
+// Side effects
+const { InMemoryNotifier } = require('../notifications/in-memory-notifier');
+const { SyncEventBus } = require('../messaging/sync-event-bus');
+const { AsyncEventBus } = require('../messaging/async-event-bus');
+const { NotificationSubscriber } = require('../messaging/subscribers/notification-subscriber');
 
 // Commands
 const { RegisterUserHandler } = require('../application/commands/register-user');
@@ -28,13 +38,13 @@ const { ListFitnessClassesHandler } = require('../application/queries/list-fitne
 const { GetFitnessClassHandler } = require('../application/queries/get-fitness-class');
 const { ListMyBookingsHandler } = require('../application/queries/list-my-bookings');
 
-function buildContainer({ db, jwtSecret }) {
-  // Write side
+function buildContainer({ db, jwtSecret, communicationMode = 'async', notifier } = {}) {
+  // Write-side
   const userRepository = new SqliteUserRepository(db);
   const fitnessClassRepository = new SqliteFitnessClassRepository(db);
   const bookingRepository = new SqliteBookingRepository(db);
 
-  // Read side — separate from write side per CQS
+  // Read-side
   const userReadRepository = new SqliteUserReadRepository(db);
   const fitnessClassReadRepository = new SqliteFitnessClassReadRepository(db);
   const bookingReadRepository = new SqliteBookingReadRepository(db);
@@ -46,15 +56,29 @@ function buildContainer({ db, jwtSecret }) {
   const fitnessClassFactory = new FitnessClassFactory();
   const bookingFactory = new BookingFactory({ fitnessClassRepository, bookingRepository });
 
+  // Side effects: pick a bus + wire subscribers.
+  const effectiveNotifier = notifier ?? new InMemoryNotifier();
+  const eventBus = communicationMode === 'sync'
+    ? new SyncEventBus()
+    : new AsyncEventBus();
+  const notificationSubscriber = new NotificationSubscriber({ notifier: effectiveNotifier });
+  notificationSubscriber.registerOn(eventBus);
+
   const handlers = {
     // Commands
-    registerUser: new RegisterUserHandler({ userFactory, userRepository, passwordHasher, tokenService }),
+    registerUser: new RegisterUserHandler({
+      userFactory, userRepository, passwordHasher, tokenService, eventBus,
+    }),
     loginUser: new LoginUserHandler({ userRepository, passwordHasher, tokenService }),
     createFitnessClass: new CreateFitnessClassHandler({ fitnessClassFactory, fitnessClassRepository }),
     updateFitnessClass: new UpdateFitnessClassHandler({ fitnessClassRepository, bookingRepository }),
     deleteFitnessClass: new DeleteFitnessClassHandler({ fitnessClassRepository }),
-    bookClass: new BookClassHandler({ bookingFactory, bookingRepository }),
-    cancelBooking: new CancelBookingHandler({ bookingRepository, fitnessClassRepository }),
+    bookClass: new BookClassHandler({
+      bookingFactory, bookingRepository, userRepository, fitnessClassRepository, eventBus,
+    }),
+    cancelBooking: new CancelBookingHandler({
+      bookingRepository, fitnessClassRepository, userRepository, eventBus,
+    }),
     // Queries
     getCurrentUser: new GetCurrentUserHandler({ userReadRepository }),
     listFitnessClasses: new ListFitnessClassesHandler({ fitnessClassReadRepository }),
@@ -67,6 +91,7 @@ function buildContainer({ db, jwtSecret }) {
     readRepositories: { userReadRepository, fitnessClassReadRepository, bookingReadRepository },
     services: { passwordHasher, tokenService },
     factories: { userFactory, fitnessClassFactory, bookingFactory },
+    messaging: { eventBus, notifier: effectiveNotifier, notificationSubscriber, communicationMode },
     handlers,
   };
 }

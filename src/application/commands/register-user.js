@@ -1,4 +1,5 @@
 const { ValidationError } = require('../../domain/errors');
+const { UserRegistered } = require('../../messaging/events/user-registered');
 
 class RegisterUserCommand {
   constructor({ email, password, name }) {
@@ -13,12 +14,14 @@ class RegisterUserHandler {
   #userRepository;
   #passwordHasher;
   #tokenService;
+  #eventBus;
 
-  constructor({ userFactory, userRepository, passwordHasher, tokenService }) {
+  constructor({ userFactory, userRepository, passwordHasher, tokenService, eventBus }) {
     this.#userFactory = userFactory;
     this.#userRepository = userRepository;
     this.#passwordHasher = passwordHasher;
     this.#tokenService = tokenService;
+    this.#eventBus = eventBus;
   }
 
   async handle(command) {
@@ -41,6 +44,21 @@ class RegisterUserHandler {
       email: user.email.value,
       role: user.role,
     });
+
+    // Publish AFTER successful save. The handler doesn't know who subscribes —
+    // it just announces a fact.
+    if (this.#eventBus) {
+      const result = this.#eventBus.publish(new UserRegistered({
+        userId: user.id,
+        email: user.email.value,
+        name: user.name,
+        occurredAt: new Date().toISOString(),
+      }));
+      // SyncEventBus.publish returns a Promise; AsyncEventBus.publish returns void.
+      // Awaiting a non-Promise is harmless — this lets one handler work in both modes.
+      if (result && typeof result.then === 'function') await result;
+    }
+
     return { userId: user.id, token };
   }
 }
